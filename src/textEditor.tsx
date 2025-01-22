@@ -10,6 +10,7 @@ import {
 import { db } from "./firebase_config";
 import "react-quill/dist/quill.snow.css";
 import "./App.css";
+import throttle from "lodash/throttle";
 
 export const TextEditor = () => {
   const quillRef = useRef<any>(null);
@@ -18,7 +19,7 @@ export const TextEditor = () => {
 
   const docRef = doc(db, "documents", "sample_doc");
 
-  const saveContent = () => {
+  const saveContent = throttle(() => {
     if (quillRef.current && isLocalChange.current) {
       const content = quillRef.current.getEditor().getContents();
       console.log(`saving content to db `, content);
@@ -28,7 +29,7 @@ export const TextEditor = () => {
         .catch(console.error);
       isLocalChange.current = false;
     }
-  };
+  }, 1000);
 
   useEffect(() => {
     if (quillRef) {
