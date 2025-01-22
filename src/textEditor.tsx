@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
-import { setDoc, doc, getDoc } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  getDoc,
+  onSnapshot,
+  DocumentSnapshot,
+} from "firebase/firestore";
 import { db } from "./firebase_config";
 import "react-quill/dist/quill.snow.css";
 import "./App.css";
@@ -38,6 +44,20 @@ export const TextEditor = () => {
           }
         })
         .catch(console.error);
+
+      const unSubs = onSnapshot(docRef, (snapshort) => {
+        if (snapshort.exists()) {
+          const newContent = snapshort.data().content;
+          if (!isEditing) {
+            const editor = quillRef.current.getEditor();
+            const currentCursorPos = editor.getSelection()?.index || 0;
+
+            editor.setContents(newContent, "silent");
+            editor.setSelection(currentCursorPos);
+          }
+        }
+      });
+
       const editor = quillRef.current.getEditor();
       editor.on("text-change", (f_arg: any, s_arg: any, source: any) => {
         if (source == "user") {
@@ -48,6 +68,11 @@ export const TextEditor = () => {
           setTimeout(() => setIsEditing(false), 5000);
         }
       });
+
+      return () => {
+        unSubs();
+        editor.off("text-change");
+      };
     }
   }, []);
 
