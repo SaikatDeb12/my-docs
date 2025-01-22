@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./App.css";
 import { auth } from "./firebase_config";
 import { signInAnonymously, onAuthStateChanged } from "firebase/auth";

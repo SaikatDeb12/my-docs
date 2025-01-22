@@ -1,12 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
-import {
-  setDoc,
-  doc,
-  getDoc,
-  onSnapshot,
-  DocumentSnapshot,
-} from "firebase/firestore";
+import { setDoc, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase_config";
 import "react-quill/dist/quill.snow.css";
 import "./App.css";
@@ -60,7 +54,7 @@ export const TextEditor = () => {
       });
 
       const editor = quillRef.current.getEditor();
-      editor.on("text-change", (f_arg: any, s_arg: any, source: any) => {
+      editor.on("text-change", (_: any, __: any, source: any) => {
         if (source == "user") {
           isLocalChange.current = true;
           setIsEditing(true);
